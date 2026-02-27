@@ -6,7 +6,7 @@ import {
   useStore,
   type ReactFlowState,
 } from "@xyflow/react";
-import GlobalStore from "@/store/GlobalStore";
+
 import { getLayoutedElements } from "../../lib/utils/layout";
 import { Button } from "@/components/ui";
 
@@ -15,21 +15,20 @@ function LayoutControls() {
   const store = useStoreApi();
   const transform = useStore(transformSelector);
   const { fitView, zoomIn, zoomOut, setCenter } = useReactFlow();
-  const setNodes = GlobalStore((state) => state.setNodes);
-  const nodes = GlobalStore((state) => state.nodes);
-  const setEdges = GlobalStore((state) => state.setEdges);
-  const edges = GlobalStore((state) => state.edges);
+  const { setNodes, getNodes, setEdges, getEdges } = useReactFlow();
 
   const onLayout = useCallback(
     (direction: "TB" | "LR") => {
-      const layouted = getLayoutedElements(nodes, edges, { direction });
+      const layouted = getLayoutedElements(getNodes(), getEdges(), {
+        direction,
+      });
 
       setNodes([...layouted.nodes]);
       setEdges([...layouted.edges]);
 
       fitView();
     },
-    [nodes, edges, setNodes, setEdges, fitView]
+    [getNodes, getEdges, setNodes, setEdges, fitView]
   );
 
   const focusNode = () => {
@@ -61,7 +60,7 @@ function LayoutControls() {
         <div className="transform">
           坐标： [{transform[0].toFixed(2)}, {transform[1].toFixed(2)},
           {transform[2].toFixed(2)}]<div className="title">Nodes</div>
-          {nodes.map((node) => (
+          {getNodes().map((node) => (
             <div key={node.id}>
               Node {node.id} - x: {node.position.x.toFixed(2)}, y:{" "}
               {node.position.y.toFixed(2)}

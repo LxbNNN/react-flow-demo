@@ -1,5 +1,5 @@
 import { RefObject, useCallback, useRef, useState } from "react";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { useDraggable } from "@neodrag/react";
 import { Panel, useReactFlow, XYPosition } from "@xyflow/react";
 import { Button } from "@/components/ui";
@@ -43,7 +43,7 @@ function DraggableNode({
   });
 
   return (
-    <div className={clsx("dndnode", className)} ref={draggableRef}>
+    <div className={cn("dndnode", className)} ref={draggableRef}>
       {children}
     </div>
   );
