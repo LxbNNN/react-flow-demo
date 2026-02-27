@@ -3,8 +3,10 @@ import {
   Position,
   useNodeConnections,
   useNodesData,
+  useReactFlow,
 } from "@xyflow/react";
 import { SourceNodeData } from "@/type/common";
+import { useEffect } from "react";
 
 interface ColorRGB {
   r: number;
@@ -12,13 +14,18 @@ interface ColorRGB {
   b: number;
 }
 
-const BaseNode = () => {
+const BaseNode = ({ id }: { id: string }) => {
+  const { updateNodeData } = useReactFlow();
   const connections = useNodeConnections({ handleType: "target" });
   const nodesData = useNodesData<SourceNodeData<{ value: ColorRGB }>>(
     connections?.[0]?.source
   );
 
   const color = nodesData?.data?.value ?? { r: 0, g: 0, b: 0 };
+
+  useEffect(() => {
+    updateNodeData(id, { value: color });
+  }, [nodesData?.data?.value]);
 
   return (
     <div className="w-[150] h-[150] rounded-lg  bg-amber-300 border-black flex flex-col  justify-around">
